@@ -19,6 +19,7 @@ $(fdroid_root)/$(fdroid_dir)/$(fdroid_apk):
 	cd $(fdroid_root)/$(fdroid_dir) && gradle assembleRelease
 
 LOCAL_CERTIFICATE := platform
+LOCAL_PRIVILEGED_MODULE := true
 LOCAL_SRC_FILES := $(fdroid_dir)/$(fdroid_apk)
 LOCAL_MODULE_CLASS := APPS
 LOCAL_MODULE_SUFFIX := $(COMMON_ANDROID_PACKAGE_SUFFIX)
