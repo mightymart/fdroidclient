@@ -117,14 +117,5 @@
                 android:summary="@string/force_old_index_summary"
                 android:defaultValue="false"
                 android:dependency="expert" />
-        <CheckBoxPreference android:title="@string/system_installer"
-            android:defaultValue="false"
-            android:key="privilegedInstaller"
-            android:persistent="false"
-            android:dependency="expert" />
-        <Preference android:title="@string/uninstall_system"
-            android:summary="@string/uninstall_system_summary"
-            android:key="uninstallPrivilegedApp"
-            android:dependency="expert" />
     </PreferenceCategory>
 </PreferenceScreen>
