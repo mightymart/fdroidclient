@@ -97,6 +97,7 @@
             android:summary="@string/keep_install_history_summary"
             android:defaultValue="false"
             android:dependency="expert" />
+        <!--
         <CheckBoxPreference android:title="@string/system_installer"
             android:defaultValue="false"
             android:key="privilegedInstaller"
@@ -106,5 +107,6 @@
             android:summary="@string/uninstall_system_summary"
             android:key="uninstallPrivilegedApp"
             android:dependency="expert" />
+        -->
     </PreferenceCategory>
 </PreferenceScreen>
