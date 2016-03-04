@@ -42,7 +42,7 @@ public class PreferencesFragment extends PreferenceFragment
         Preferences.PREF_LANGUAGE,
         Preferences.PREF_KEEP_CACHE_TIME,
         Preferences.PREF_EXPERT,
-        Preferences.PREF_PRIVILEGED_INSTALLER,
+        //Preferences.PREF_PRIVILEGED_INSTALLER,
         Preferences.PREF_ENABLE_PROXY,
         Preferences.PREF_PROXY_HOST,
         Preferences.PREF_PROXY_PORT,
@@ -359,8 +359,8 @@ public class PreferencesFragment extends PreferenceFragment
         currentKeepCacheTime = Preferences.get().getKeepCacheTime();
 
         initAutoFetchUpdatesPreference();
-        initPrivilegedInstallerPreference();
-        initUpdatePrivilegedExtensionPreference();
+        //initPrivilegedInstallerPreference();
+        //initUpdatePrivilegedExtensionPreference();
         initUseTorPreference();
     }
 
