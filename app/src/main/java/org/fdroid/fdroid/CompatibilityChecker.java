@@ -2,18 +2,23 @@ package org.fdroid.fdroid;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.FeatureInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.Signature;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import org.fdroid.fdroid.compat.SupportedArchitectures;
 import org.fdroid.fdroid.data.Apk;
-
+import org.fdroid.fdroid.Utils;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +34,7 @@ public class CompatibilityChecker {
     private final String[] cpuAbis;
     private final String cpuAbisDesc;
     private final boolean ignoreTouchscreen;
+    private final HashMap<String, String> systemApps;
 
     public CompatibilityChecker(Context ctx) {
 
@@ -53,6 +59,34 @@ public class CompatibilityChecker {
                 for (FeatureInfo fi : pm.getSystemAvailableFeatures()) {
                     features.add(fi.name);
                 }
+            }
+        }
+
+        systemApps = new HashMap<>();
+        for (final ApplicationInfo ai: pm.getInstalledApplications(0)) {
+            Signature sig;
+            try {
+                sig = ctx.getPackageManager().getPackageInfo(
+                        ai.packageName, PackageManager.GET_SIGNATURES).signatures[0];
+            } catch (NameNotFoundException e) {
+                continue;
+            }
+            byte[] rawCertBytes = sig.toByteArray();
+
+            final byte[] fdroidSig = new byte[rawCertBytes.length * 2];
+            for (int j = 0; j < rawCertBytes.length; j++) {
+                byte v = rawCertBytes[j];
+                int d = (v >> 4) & 0xF;
+                fdroidSig[j * 2] = (byte) (d >= 10 ? ('a' + d - 10) : ('0' + d));
+                d = v & 0xF;
+                fdroidSig[j * 2 + 1] = (byte) (d >= 10 ? ('a' + d - 10) : ('0' + d));
+            }
+
+            String hash = Utils.hashBytes(fdroidSig, "md5");
+
+            if ((ai.flags & ApplicationInfo.FLAG_SYSTEM) != 0 ||
+                    (ai.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0) {
+                systemApps.put(ai.packageName, hash);
             }
         }
 
@@ -117,6 +151,12 @@ public class CompatibilityChecker {
             Utils.debugLog(TAG, apk.packageName + " vercode " + apk.versionCode
                     + " only supports " + TextUtils.join(", ", apk.nativecode)
                     + " while your architectures are " + cpuAbisDesc);
+        }
+
+        String hash = systemApps.get(apk.packageName);
+        if (hash != null && !hash.equalsIgnoreCase(apk.sig)) {
+            Log.i(TAG, "incompatible system app: " + apk.packageName + " " + hash + " " + apk.sig);
+            Collections.addAll(incompatibleReasons, "Not already installed as a system app");
         }
 
         return incompatibleReasons;
