@@ -171,7 +171,7 @@ android {
 
     defaultConfig {
         versionCode 102350
-        versionName getVersionName()
+        versionName "0.102.3"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
