@@ -225,7 +225,7 @@ android {
 
     defaultConfig {
         versionCode 1001050
-        versionName getVersionName()
+        versionName "1.1"
         applicationId 'org.fdroid.fdroid'
         resValue "string", "applicationId", applicationId
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
