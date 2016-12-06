@@ -209,7 +209,7 @@ android {
 
     defaultConfig {
         versionCode 104050
-        versionName getVersionName()
+        versionName "0.104"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
 
