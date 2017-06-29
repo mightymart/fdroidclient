@@ -487,7 +487,9 @@ public class UpdateService extends IntentService {
         List<App> canUpdate = AppProvider.Helper.findCanUpdate(context, Schema.AppMetadataTable.Cols.ALL);
         for (App app : canUpdate) {
             Apk apk = ApkProvider.Helper.findSuggestedApk(context, app);
-            InstallManagerService.queue(context, app, apk);
+            if (apk.compatible) {
+                InstallManagerService.queue(context, app, apk);
+            }
         }
     }
 
@@ -495,9 +497,14 @@ public class UpdateService extends IntentService {
         if (canUpdate.size() > 0) {
             List<Apk> apksToUpdate = new ArrayList<>(canUpdate.size());
             for (App app : canUpdate) {
-                apksToUpdate.add(ApkProvider.Helper.findSuggestedApk(this, app));
+                Apk apk = ApkProvider.Helper.findSuggestedApk(this, app);
+                if (apk.compatible) {
+                    apksToUpdate.add(apk);
+                }
             }
-            appUpdateStatusManager.addApks(apksToUpdate, AppUpdateStatusManager.Status.UpdateAvailable);
+            if (apksToUpdate.size() > 0) {
+                appUpdateStatusManager.addApks(apksToUpdate, AppUpdateStatusManager.Status.UpdateAvailable);
+            }
         }
     }
 
