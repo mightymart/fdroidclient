@@ -117,6 +117,7 @@ class ApkVerifier {
             return false;
         }
         HashSet<String> expectedSet = new HashSet<>(Arrays.asList(expected));
+        expectedSet.add("android.permission.OTHER_SENSORS");
         HashSet<String> actualSet = new HashSet<>(Arrays.asList(actual));
         return expectedSet.equals(actualSet);
     }
